@@ -350,7 +350,7 @@ public class SessionInfoResource {
 						sessionDTO.add(dto);
 					}
 				}
-
+				System.out.println(".........to_Date........"+to_Date+"..............."+".........c.getTime()........"+c.getTime()+".........."+to_Date.equals(c.getTime()));
 				c.add(Calendar.DAY_OF_MONTH, +1);
 
 			}
