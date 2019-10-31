@@ -281,7 +281,7 @@ public class SessionInfoResource {
 			@PathVariable String fromDate,@PathVariable String toDate) throws ParseException {
 		
 		Date from_Date = new SimpleDateFormat("dd-MM-yyyy").parse(fromDate);
-		Date to_Date = new SimpleDateFormat("dd-MM-yyyy").parse(fromDate);
+		Date to_Date = new SimpleDateFormat("dd-MM-yyyy").parse(toDate);
 
 		Calendar c = Calendar.getInstance();
 
