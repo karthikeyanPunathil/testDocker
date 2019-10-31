@@ -297,7 +297,7 @@ public class SessionInfoResource {
 			log.info("..........monthReff in........" + monthReff + ".........c.get(Calendar.MONTH)......."
 					+ c.get(Calendar.MONTH));*/
 
-			for (int i = 0;  to_Date.equals(c.getTime()); i++) {
+			for (int i = 0;  !to_Date.equals(c.getTime()); i++) {
 
 				int weekRef = c.get(Calendar.DAY_OF_WEEK);
 
