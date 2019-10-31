@@ -69,13 +69,11 @@ public class ReservedSlotResource {
 	/**
 	 * POST /reserved-slots : Create a new reservedSlot.
 	 *
-	 * @param reservedSlotDTO
-	 *            the reservedSlotDTO to create
-	 * @return the ResponseEntity with status 201 (Created) and with body the
-	 *         new reservedSlotDTO, or with status 400 (Bad Request) if the
-	 *         reservedSlot has already an ID
-	 * @throws URISyntaxException
-	 *             if the Location URI syntax is incorrect
+	 * @param reservedSlotDTO the reservedSlotDTO to create
+	 * @return the ResponseEntity with status 201 (Created) and with body the new
+	 *         reservedSlotDTO, or with status 400 (Bad Request) if the reservedSlot
+	 *         has already an ID
+	 * @throws URISyntaxException if the Location URI syntax is incorrect
 	 */
 	@PostMapping("/reserved-slots")
 	public ResponseEntity<ReservedSlotDTO> createReservedSlot(@RequestBody ReservedSlotDTO reservedSlotDTO)
@@ -96,14 +94,12 @@ public class ReservedSlotResource {
 	/**
 	 * PUT /reserved-slots : Updates an existing reservedSlot.
 	 *
-	 * @param reservedSlotDTO
-	 *            the reservedSlotDTO to update
+	 * @param reservedSlotDTO the reservedSlotDTO to update
 	 * @return the ResponseEntity with status 200 (OK) and with body the updated
 	 *         reservedSlotDTO, or with status 400 (Bad Request) if the
 	 *         reservedSlotDTO is not valid, or with status 500 (Internal Server
 	 *         Error) if the reservedSlotDTO couldn't be updated
-	 * @throws URISyntaxException
-	 *             if the Location URI syntax is incorrect
+	 * @throws URISyntaxException if the Location URI syntax is incorrect
 	 */
 	@PutMapping("/reserved-slots")
 	public ResponseEntity<ReservedSlotDTO> updateReservedSlot(@RequestBody ReservedSlotDTO reservedSlotDTO)
@@ -121,10 +117,9 @@ public class ReservedSlotResource {
 	/**
 	 * GET /reserved-slots : get all the reservedSlots.
 	 *
-	 * @param pageable
-	 *            the pagination information
-	 * @return the ResponseEntity with status 200 (OK) and the list of
-	 *         reservedSlots in body
+	 * @param pageable the pagination information
+	 * @return the ResponseEntity with status 200 (OK) and the list of reservedSlots
+	 *         in body
 	 */
 	@GetMapping("/reserved-slots")
 	public ResponseEntity<List<ReservedSlotDTO>> getAllReservedSlots(Pageable pageable) {
@@ -137,8 +132,7 @@ public class ReservedSlotResource {
 	/**
 	 * GET /reserved-slots/:id : get the "id" reservedSlot.
 	 *
-	 * @param id
-	 *            the id of the reservedSlotDTO to retrieve
+	 * @param id the id of the reservedSlotDTO to retrieve
 	 * @return the ResponseEntity with status 200 (OK) and with body the
 	 *         reservedSlotDTO, or with status 404 (Not Found)
 	 */
@@ -152,8 +146,7 @@ public class ReservedSlotResource {
 	/**
 	 * DELETE /reserved-slots/:id : delete the "id" reservedSlot.
 	 *
-	 * @param id
-	 *            the id of the reservedSlotDTO to delete
+	 * @param id the id of the reservedSlotDTO to delete
 	 * @return the ResponseEntity with status 200 (OK)
 	 */
 	@DeleteMapping("/reserved-slots/{id}")
@@ -167,10 +160,8 @@ public class ReservedSlotResource {
 	 * SEARCH /_search/reserved-slots?query=:query : search for the reservedSlot
 	 * corresponding to the query.
 	 *
-	 * @param query
-	 *            the query of the reservedSlot search
-	 * @param pageable
-	 *            the pagination information
+	 * @param query    the query of the reservedSlot search
+	 * @param pageable the pagination information
 	 * @return the result of the search
 	 */
 	@GetMapping("/_search/reserved-slots")
@@ -220,7 +211,7 @@ public class ReservedSlotResource {
 					s.setStartTime(sessionDTO.getFromTime());
 
 				} else {
-					// endTime = s.getToTime();
+
 					s.setStartTime(endTime);
 
 				}
@@ -231,6 +222,7 @@ public class ReservedSlotResource {
 				s.setDate(sessionDTO.getDate());
 				s.setId(i + 1L);
 				s.setTokenNumber(i + 1);
+				s.setDoctorId(doctorId);
 				// add doctorid
 
 				slotsDump.add(s);
@@ -299,15 +291,25 @@ public class ReservedSlotResource {
 
 				// point value exceed 60 handling
 				String bdString = bd.toString();
+				
 				int indexOfDecimal = bdString.indexOf(".");
+				
 				String integerPart = bdString.substring(0, indexOfDecimal);
+				
 				String point = bdString.substring(indexOfDecimal);
+				
 				log.debug(bdString + ">>>>>>>>>>>>>>>>>>>>>>>>>" + Double.parseDouble(point));
+				
 				if (Double.parseDouble(point) >= .60) {
+					
 					Double doubleValue = Double.parseDouble(integerPart);
+					
 					doubleValue++;
+					
 					log.debug(",,,,,,,," + doubleValue);
+					
 					s.setEndTime(doubleValue);
+					
 					log.debug("...............................if..................................." + s.getEndTime());
 
 				} else {
@@ -315,13 +317,17 @@ public class ReservedSlotResource {
 					s.setEndTime(bd.doubleValue());
 				}
 				s.setDate(sessionDTO.getDate());
+				
 				s.setId(i + 1L);
+				
 				s.setTokenNumber(i + 1);
+				
 				s.setDoctorId(doctorId);
 
 				slotsDump.add(s);
 
 				startTime = s.getEndTime();
+				
 				endTime = s.getEndTime();
 
 				log.debug(startTime + ".................................................................." + endTime);
@@ -330,18 +336,27 @@ public class ReservedSlotResource {
 
 		}
 		List<ReservedSlotDTO> unreservedSlots = new ArrayList<ReservedSlotDTO>();
+		
 		for (ReservedSlotDTO dto1 : slotsDump) {
+			
 			if (!reservedSlots.isEmpty()) {
+				
 				System.out.println("1111111111111111111111111111111" + reservedSlots);
+				
 				for (ReservedSlotDTO dto2 : reservedSlots) {
+					
 					if (!dto1.equals(dto2)) {
+						
 						System.out.println("33333333333333333333333333333333333");
+						
 						unreservedSlots.add(dto1);
 					}
 
 				}
 			} else {
+				
 				System.out.println("2222222222222222222222222222222");
+				
 				unreservedSlots.add(dto1);
 			}
 		}
@@ -372,24 +387,23 @@ public class ReservedSlotResource {
 	 * getStatus(@PathVariable Long reserveredSlotId){ return
 	 * statusService.findByReservedSlotId(reserveredSlotId); }
 	 */
-	
+
 	@PostMapping("/createReservedSlot-kafka")
-	public void createReservedSlot(){
-		//kafka configuration 
-		//consume/listen to data save it
-		Long startTime =  1499070300L; ;
+	public void createReservedSlot() {
+		// kafka configuration
+		// consume/listen to data save it
+		Long startTime = 1499070300L;
+		;
 		Long endTime;
 		Long dateLong;
 		Integer tokenNumber;
-		
-	LocalDate date=	Instant.ofEpochMilli(startTime).atZone(ZoneOffset.ofHoursMinutes(5, 30)).toLocalDate();
-	
-	LocalTime time=Instant.ofEpochMilli(startTime).atZone(ZoneOffset.ofHoursMinutes(5, 30)).toLocalTime().truncatedTo(ChronoUnit.MINUTES);
-	String t=time+"";
-	Double d=Double.parseDouble(t.replace(":","."));
-	
-	
-	
-	
+
+		LocalDate date = Instant.ofEpochMilli(startTime).atZone(ZoneOffset.ofHoursMinutes(5, 30)).toLocalDate();
+
+		LocalTime time = Instant.ofEpochMilli(startTime).atZone(ZoneOffset.ofHoursMinutes(5, 30)).toLocalTime()
+				.truncatedTo(ChronoUnit.MINUTES);
+		String t = time + "";
+		Double d = Double.parseDouble(t.replace(":", "."));
+
 	}
 }

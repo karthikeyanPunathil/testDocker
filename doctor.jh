@@ -70,7 +70,13 @@ entity Status{
 	status String
 }
 relationship OneToMany{
-	Doctor{workPlace} to WorkPlace , WorkPlace{sessionInfo} to SessionInfo , Doctor{qualification} to Qualification , Review{reply} to Reply , Doctor{review} to Review , Doctor{userRating} to UserRating , Doctor{reservedSlot} to ReservedSlot , ReservedSlot{status} to Status
+	Doctor{workPlace} to WorkPlace , 
+	WorkPlace{sessionInfo} to SessionInfo , 
+	Doctor{qualification} to Qualification , 
+	Review{reply} to Reply , Doctor{review} to Review , 
+	Doctor{userRating} to UserRating , 
+	Doctor{reservedSlot} to ReservedSlot ,
+	 ReservedSlot{status} to Status
 }
 dto * with mapstruct
 paginate * with pagination

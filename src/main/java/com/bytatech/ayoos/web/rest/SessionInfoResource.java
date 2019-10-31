@@ -35,6 +35,8 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
@@ -77,13 +79,11 @@ public class SessionInfoResource {
 	/**
 	 * POST /session-infos : Create a new sessionInfo.
 	 *
-	 * @param sessionInfoDTO
-	 *            the sessionInfoDTO to create
-	 * @return the ResponseEntity with status 201 (Created) and with body the
-	 *         new sessionInfoDTO, or with status 400 (Bad Request) if the
-	 *         sessionInfo has already an ID
-	 * @throws URISyntaxException
-	 *             if the Location URI syntax is incorrect
+	 * @param sessionInfoDTO the sessionInfoDTO to create
+	 * @return the ResponseEntity with status 201 (Created) and with body the new
+	 *         sessionInfoDTO, or with status 400 (Bad Request) if the sessionInfo
+	 *         has already an ID
+	 * @throws URISyntaxException if the Location URI syntax is incorrect
 	 */
 	@PostMapping("/session-infos")
 	public ResponseEntity<SessionInfoDTO> createSessionInfo(@Valid @RequestBody SessionInfoDTO sessionInfoDTO)
@@ -104,14 +104,12 @@ public class SessionInfoResource {
 	/**
 	 * PUT /session-infos : Updates an existing sessionInfo.
 	 *
-	 * @param sessionInfoDTO
-	 *            the sessionInfoDTO to update
+	 * @param sessionInfoDTO the sessionInfoDTO to update
 	 * @return the ResponseEntity with status 200 (OK) and with body the updated
 	 *         sessionInfoDTO, or with status 400 (Bad Request) if the
 	 *         sessionInfoDTO is not valid, or with status 500 (Internal Server
 	 *         Error) if the sessionInfoDTO couldn't be updated
-	 * @throws URISyntaxException
-	 *             if the Location URI syntax is incorrect
+	 * @throws URISyntaxException if the Location URI syntax is incorrect
 	 */
 	@PutMapping("/session-infos")
 	public ResponseEntity<SessionInfoDTO> updateSessionInfo(@Valid @RequestBody SessionInfoDTO sessionInfoDTO)
@@ -129,10 +127,9 @@ public class SessionInfoResource {
 	/**
 	 * GET /session-infos : get all the sessionInfos.
 	 *
-	 * @param pageable
-	 *            the pagination information
-	 * @return the ResponseEntity with status 200 (OK) and the list of
-	 *         sessionInfos in body
+	 * @param pageable the pagination information
+	 * @return the ResponseEntity with status 200 (OK) and the list of sessionInfos
+	 *         in body
 	 */
 	@GetMapping("/session-infos")
 	public ResponseEntity<List<SessionInfoDTO>> getAllSessionInfos(Pageable pageable) {
@@ -145,8 +142,7 @@ public class SessionInfoResource {
 	/**
 	 * GET /session-infos/:id : get the "id" sessionInfo.
 	 *
-	 * @param id
-	 *            the id of the sessionInfoDTO to retrieve
+	 * @param id the id of the sessionInfoDTO to retrieve
 	 * @return the ResponseEntity with status 200 (OK) and with body the
 	 *         sessionInfoDTO, or with status 404 (Not Found)
 	 */
@@ -160,8 +156,7 @@ public class SessionInfoResource {
 	/**
 	 * DELETE /session-infos/:id : delete the "id" sessionInfo.
 	 *
-	 * @param id
-	 *            the id of the sessionInfoDTO to delete
+	 * @param id the id of the sessionInfoDTO to delete
 	 * @return the ResponseEntity with status 200 (OK)
 	 */
 	@DeleteMapping("/session-infos/{id}")
@@ -175,10 +170,8 @@ public class SessionInfoResource {
 	 * SEARCH /_search/session-infos?query=:query : search for the sessionInfo
 	 * corresponding to the query.
 	 *
-	 * @param query
-	 *            the query of the sessionInfo search
-	 * @param pageable
-	 *            the pagination information
+	 * @param query    the query of the sessionInfo search
+	 * @param pageable the pagination information
 	 * @return the result of the search
 	 */
 	@GetMapping("/_search/session-infos")
@@ -202,48 +195,76 @@ public class SessionInfoResource {
 
 	@PostMapping("/createSessionInfo")
 	public List<SessionInfoDTO> setSessionToMonth(@RequestBody List<SessionInfoDTO> sessionList,
-			@RequestParam List<Integer> monthList) {
+			@RequestParam List<Integer> monthList) throws ParseException {
+		// actually we need two type of session creation one by from date to two date
+		// and another by monthwise
+		
+		
+		Date currentdate = new SimpleDateFormat("dd-MM-yyyy").parse("01-" + monthList + "-2019");
 
-		Date currentdate = new Date();
 		Calendar c = Calendar.getInstance();
-		c.setTime(currentdate);// we can give different date as our prefference
+
+		c.setTime(currentdate);
+
 		List<SessionInfoDTO> sessionDTO = new ArrayList<SessionInfoDTO>();
+
 		for (Integer monthReff : monthList) {
-			log.info(".................monthList..................."+monthList);
-			log.info("..........monthReff in........"+monthReff+".........c.get(Calendar.MONTH)......."+c.get(Calendar.MONTH));
+
+			log.info(".................monthList..................." + monthList);
+
+			log.info("..........monthReff in........" + monthReff + ".........c.get(Calendar.MONTH)......."
+					+ c.get(Calendar.MONTH));
+
 			for (int i = 0; monthReff == (c.get(Calendar.MONTH)); i++) {
 
 				int weekRef = c.get(Calendar.DAY_OF_WEEK);
 
 				for (SessionInfoDTO sDTO : sessionList) {
-log.info("..........weekRef............"+weekRef+".......sDTO.getWeekDay()........"+sDTO.getWeekDay());
+
+					log.info("..........weekRef............" + weekRef + ".......sDTO.getWeekDay()........"
+							+ sDTO.getWeekDay());
+
 					if (weekRef == sDTO.getWeekDay()) {
+
 						SessionInfo s = new SessionInfo();
+
 						s.setSessionName(sDTO.getSessionName());
+
 						s.setDate(c.getTime().toInstant().atZone(ZoneId.systemDefault()).toLocalDate());
+
 						s.setWeekDay(weekRef);
+
 						s.setFromTime(sDTO.getFromTime());
+
 						s.setToTime(sDTO.getToTime());
+
 						s.setInterval(sDTO.getInterval());
-						/*if(s.getFromTime()<=11){
-							s.setSessionName("Morning Session");
-						}else if(s.getFromTime()>11&&s.getFromTime()>=14){
-							s.setSessionName("Morning Session");
-						}else if(s.getFromTime()>14)*/
+
+						/*
+						 * if(s.getFromTime()<=11){ s.setSessionName("Morning Session"); }else
+						 * if(s.getFromTime()>11&&s.getFromTime()>=14){
+						 * s.setSessionName("Morning Session"); }else if(s.getFromTime()>14)
+						 */
+						log.info("...............workplaceid.................." + sDTO.getWorkPlaceId());
 						WorkPlaceDTO workplaceDTO = workPlaceService.findOne(sDTO.getWorkPlaceId()).get();
+
 						s.setWorkPlace(workPlaceMapper.toEntity(workplaceDTO));
-						
 
 						if (s.getId() != null) {
 
 							throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
 						}
+
 						SessionInfoDTO Sessiondto = sessionInfoMapper.toDto(s);
+
 						SessionInfoDTO dto = sessionInfoService.save(Sessiondto);
+
 						if (dto.getId() == null) {
 							throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
 						}
+
 						SessionInfoDTO result = sessionInfoService.save(dto);
+
 						sessionDTO.add(dto);
 					}
 				}
@@ -255,6 +276,88 @@ log.info("..........weekRef............"+weekRef+".......sDTO.getWeekDay()......
 		return sessionDTO;
 	}
 
+	@PostMapping("/sessionInfoByDate/{fromDate}/{toDate}")
+	public List<SessionInfoDTO> setSessionByDates(@RequestBody List<SessionInfoDTO> sessionList,
+			@PathVariable String fromDate,@PathVariable String toDate) throws ParseException {
+		
+		Date from_Date = new SimpleDateFormat("dd-MM-yyyy").parse(fromDate);
+		Date to_Date = new SimpleDateFormat("dd-MM-yyyy").parse(fromDate);
+
+		Calendar c = Calendar.getInstance();
+
+		c.setTime(from_Date);
+
+		
+		List<SessionInfoDTO> sessionDTO = new ArrayList<SessionInfoDTO>();
+/*
+		for (Integer monthReff : monthList) {
+
+			log.info(".................monthList..................." + monthList);
+
+			log.info("..........monthReff in........" + monthReff + ".........c.get(Calendar.MONTH)......."
+					+ c.get(Calendar.MONTH));*/
+
+			for (int i = 0;  to_Date.equals(c.getTime()); i++) {
+
+				int weekRef = c.get(Calendar.DAY_OF_WEEK);
+
+				for (SessionInfoDTO sDTO : sessionList) {
+
+					log.info("..........weekRef............" + weekRef + ".......sDTO.getWeekDay()........"
+							+ sDTO.getWeekDay());
+
+					if (weekRef == sDTO.getWeekDay()) {
+
+						SessionInfo s = new SessionInfo();
+
+						s.setSessionName(sDTO.getSessionName());
+
+						s.setDate(c.getTime().toInstant().atZone(ZoneId.systemDefault()).toLocalDate());
+
+						s.setWeekDay(weekRef);
+
+						s.setFromTime(sDTO.getFromTime());
+
+						s.setToTime(sDTO.getToTime());
+
+						s.setInterval(sDTO.getInterval());
+
+						/*
+						 * if(s.getFromTime()<=11){ s.setSessionName("Morning Session"); }else
+						 * if(s.getFromTime()>11&&s.getFromTime()>=14){
+						 * s.setSessionName("Morning Session"); }else if(s.getFromTime()>14)
+						 */
+						log.info("...............workplaceid.................." + sDTO.getWorkPlaceId());
+						WorkPlaceDTO workplaceDTO = workPlaceService.findOne(sDTO.getWorkPlaceId()).get();
+
+						s.setWorkPlace(workPlaceMapper.toEntity(workplaceDTO));
+
+						if (s.getId() != null) {
+
+							throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
+						}
+
+						SessionInfoDTO Sessiondto = sessionInfoMapper.toDto(s);
+
+						SessionInfoDTO dto = sessionInfoService.save(Sessiondto);
+
+						if (dto.getId() == null) {
+							throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
+						}
+
+						SessionInfoDTO result = sessionInfoService.save(dto);
+
+						sessionDTO.add(dto);
+					}
+				}
+
+				c.add(Calendar.DAY_OF_MONTH, +1);
+
+			}
+		//}
+		return sessionDTO;
+	}
+	
 	/*
 	 * @GetMapping("/slots/{date}") public List<Slot> createSlots(@PathVariable
 	 * LocalDate date) { List<SessionInfoDTO> sessionList =
@@ -262,16 +365,15 @@ log.info("..........weekRef............"+weekRef+".......sDTO.getWeekDay()......
 	 * ArrayList<Slot>(); Double startTime = 0.0; Double endTime = 0.0; for
 	 * (SessionInfoDTO sessionDTO : sessionList) { for (int i = 0; startTime <=
 	 * sessionDTO.getToTime(); i++) { Slot s = new Slot(); if (i == 0) {
-	 * s.setStarTime(sessionDTO.getFromTime()); // System.out.println("if
-	 * starttime // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>cl"+s.getStarTime()); }
-	 * else { // endTime = s.getToTime(); s.setStarTime(endTime); //
-	 * System.out.println("else //
+	 * s.setStarTime(sessionDTO.getFromTime()); // System.out.println("if starttime
+	 * // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>cl"+s.getStarTime()); } else { // endTime
+	 * = s.getToTime(); s.setStarTime(endTime); // System.out.println("else //
 	 * endtime>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"+s.getStarTime()); }
 	 * s.setToTime(s.getStarTime() + sessionDTO.getInterval()); //
 	 * System.out.println("totime //
 	 * >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"+s.getToTime());
-	 * s.setDate(sessionDTO.getDate()); s.setId(i + 1); slots.add(s); startTime
-	 * = s.getStarTime(); endTime = s.getToTime(); } } return slots; }
+	 * s.setDate(sessionDTO.getDate()); s.setId(i + 1); slots.add(s); startTime =
+	 * s.getStarTime(); endTime = s.getToTime(); } } return slots; }
 	 */
 
 }
