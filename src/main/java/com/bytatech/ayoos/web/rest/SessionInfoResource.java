@@ -198,8 +198,7 @@ public class SessionInfoResource {
 			@RequestParam List<Integer> monthList) throws ParseException {
 		// actually we need two type of session creation one by from date to two date
 		// and another by monthwise
-		
-		
+
 		Date currentdate = new SimpleDateFormat("dd-MM-yyyy").parse("01-" + monthList + "-2019");
 
 		Calendar c = Calendar.getInstance();
@@ -278,8 +277,8 @@ public class SessionInfoResource {
 
 	@PostMapping("/sessionInfoByDate/{fromDate}/{toDate}")
 	public List<SessionInfoDTO> setSessionByDates(@RequestBody List<SessionInfoDTO> sessionList,
-			@PathVariable String fromDate,@PathVariable String toDate) throws ParseException {
-		
+			@PathVariable String fromDate, @PathVariable String toDate) throws ParseException {
+
 		Date from_Date = new SimpleDateFormat("dd-MM-yyyy").parse(fromDate);
 		Date to_Date = new SimpleDateFormat("dd-MM-yyyy").parse(toDate);
 
@@ -287,17 +286,10 @@ public class SessionInfoResource {
 
 		c.setTime(from_Date);
 
-		
 		List<SessionInfoDTO> sessionDTO = new ArrayList<SessionInfoDTO>();
-/*
-		for (Integer monthReff : monthList) {
 
-			log.info(".................monthList..................." + monthList);
-
-			log.info("..........monthReff in........" + monthReff + ".........c.get(Calendar.MONTH)......."
-					+ c.get(Calendar.MONTH));*/
-
-			for (int i = 0;  !to_Date.equals(c.getTime()); i++) {
+		if (from_Date.before(to_Date)) {
+			for (int i = 0; !to_Date.equals(c.getTime()); i++) {
 
 				int weekRef = c.get(Calendar.DAY_OF_WEEK);
 
@@ -321,12 +313,6 @@ public class SessionInfoResource {
 						s.setToTime(sDTO.getToTime());
 
 						s.setInterval(sDTO.getInterval());
-
-						/*
-						 * if(s.getFromTime()<=11){ s.setSessionName("Morning Session"); }else
-						 * if(s.getFromTime()>11&&s.getFromTime()>=14){
-						 * s.setSessionName("Morning Session"); }else if(s.getFromTime()>14)
-						 */
 						log.info("...............workplaceid.................." + sDTO.getWorkPlaceId());
 						WorkPlaceDTO workplaceDTO = workPlaceService.findOne(sDTO.getWorkPlaceId()).get();
 
@@ -350,14 +336,14 @@ public class SessionInfoResource {
 						sessionDTO.add(dto);
 					}
 				}
-				System.out.println(".........to_Date1........"+to_Date+"..............."+".........c.getTime()........"+c.getTime()+".........."+to_Date.equals(c.getTime()));
+				// System.out.println(".........to_Date1........"+to_Date+"..............."+".........c.getTime()........"+c.getTime()+".........."+to_Date.equals(c.getTime()));
 				c.add(Calendar.DAY_OF_MONTH, +1);
-				System.out.println(".........to_Date2........"+to_Date+"..............."+".........c.getTime()........"+c.getTime()+".........."+to_Date.equals(c.getTime()));
+				// System.out.println(".........to_Date2........"+to_Date+"..............."+".........c.getTime()........"+c.getTime()+".........."+to_Date.equals(c.getTime()));
 			}
-		//}
+		}
 		return sessionDTO;
 	}
-	
+
 	/*
 	 * @GetMapping("/slots/{date}") public List<Slot> createSlots(@PathVariable
 	 * LocalDate date) { List<SessionInfoDTO> sessionList =
