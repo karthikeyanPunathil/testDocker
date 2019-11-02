@@ -199,7 +199,7 @@ public class SessionInfoResource {
 		// actually we need two type of session creation one by from date to two date
 		// and another by monthwise
 
-		Date currentdate = new SimpleDateFormat("dd-MM-yyyy").parse("01-" + monthList + "-2019");
+		Date currentdate = new Date();//new SimpleDateFormat("dd-MM-yyyy").parse("01-" + monthList + "-2019");
 
 		Calendar c = Calendar.getInstance();
 
