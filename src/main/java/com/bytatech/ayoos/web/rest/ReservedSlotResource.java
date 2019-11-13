@@ -257,7 +257,9 @@ public class ReservedSlotResource {
 	public void test1(@PathVariable LocalDate date, @PathVariable Long doctorId) {
 		System.out.println("......................test................." + date + "............." + doctorId);
 	}
-
+/*
+ * This method is used to create slots or split slots based on given date and corresponding doctor detail
+ */
 	@GetMapping("/test2/{date}/{doctorId}")
 	public List<ReservedSlotDTO> test2(@PathVariable String date, @PathVariable Long doctorId) {
 
@@ -335,6 +337,9 @@ public class ReservedSlotResource {
 			}
 
 		}
+		
+		//comparing reserved and unserved slots so that unreserved slots are splited accordingly
+		
 		List<ReservedSlotDTO> unreservedSlots = new ArrayList<ReservedSlotDTO>();
 		
 		for (ReservedSlotDTO dto1 : slotsDump) {
@@ -364,6 +369,9 @@ public class ReservedSlotResource {
 		return unreservedSlots;
 	}
 
+	/*
+	 * Get all unreserved slots with status comparison
+	 */
 	@GetMapping("/unReserved-slots")
 	public List<ReservedSlotDTO> getAllUnReservedSlots(Pageable pageable) {
 		List<ReservedSlotDTO> slots = reservedSlotService.findAll(pageable).getContent();
@@ -387,7 +395,10 @@ public class ReservedSlotResource {
 	 * getStatus(@PathVariable Long reserveredSlotId){ return
 	 * statusService.findByReservedSlotId(reserveredSlotId); }
 	 */
-
+/*
+ * TO-DO
+ * Here want to save the reserved slots from kafka posted via  activity
+ */
 	@PostMapping("/createReservedSlot-kafka")
 	public void createReservedSlot() {
 		// kafka configuration

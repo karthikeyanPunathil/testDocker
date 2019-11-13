@@ -193,13 +193,18 @@ public class SessionInfoResource {
 		return ResponseEntity.ok().body(dtos);
 	}
 
+	/*
+	 * This method is creating session based on month and session detail delete-me:
+	 * which is now used in ui which has to changed to setSessionByDates for future
+	 * releases
+	 */
 	@PostMapping("/createSessionInfo")
 	public List<SessionInfoDTO> setSessionToMonth(@RequestBody List<SessionInfoDTO> sessionList,
 			@RequestParam List<Integer> monthList) throws ParseException {
 		// actually we need two type of session creation one by from date to two date
 		// and another by monthwise
 
-		Date currentdate = new Date();//new SimpleDateFormat("dd-MM-yyyy").parse("01-" + monthList + "-2019");
+		Date currentdate = new Date();// new SimpleDateFormat("dd-MM-yyyy").parse("01-" + monthList + "-2019");
 
 		Calendar c = Calendar.getInstance();
 
@@ -275,6 +280,10 @@ public class SessionInfoResource {
 		return sessionDTO;
 	}
 
+	/*
+	 * create session of doctor based on fromDate and toDate Delete-Me: Use this
+	 * method for session creation
+	 */
 	@PostMapping("/sessionInfoByDate/{fromDate}/{toDate}")
 	public List<SessionInfoDTO> setSessionByDates(@RequestBody List<SessionInfoDTO> sessionList,
 			@PathVariable String fromDate, @PathVariable String toDate) throws ParseException {

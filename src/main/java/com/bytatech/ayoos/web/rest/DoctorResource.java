@@ -216,6 +216,9 @@ public class DoctorResource {
 		return ResponseUtil.wrapOrNotFound(doctorDTO);
 	}
 
+	/**
+	 * This method is an aggregate to get the doctor details completely in single entity
+	 */
 	@GetMapping("/doctor/{doctorId}")
 	public DoctorAggregateDTO getDoctorByDoctorId(@PathVariable String doctorId) {
 		log.debug("REST request to get Doctor : {}", doctorId);
@@ -304,6 +307,9 @@ public class DoctorResource {
 		return ResponseEntity.ok().body(dtos);
 	}
 
+	/*
+	 * This method is helper method to UI team to get DTO in many cases eg: update 
+	 */
 	@PostMapping("/doctor/modelToDto")
 	public ResponseEntity<DoctorDTO> modelToDto(@RequestBody Doctor doctor) {
 		log.debug("REST request to convert to DTO");

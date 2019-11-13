@@ -56,6 +56,8 @@ public class UserRatingServiceImpl implements UserRatingService {
      *
      * @param userRatingDTO the entity to save
      * @return the persisted entity
+     * 
+     * desc:while saving data the ratting count calculation is added here
      */
     @Override
     public UserRatingDTO save(UserRatingDTO userRatingDTO) {
