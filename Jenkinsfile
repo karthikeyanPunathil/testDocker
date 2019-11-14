@@ -5,4 +5,7 @@ node{
   stage('Compile-Package'){
   sh 'mvn spring-boot:run'
   }
+  stage('Build Docker Image'){
+  sh 'sudo mvn package -Pprod verify jib:dockerBuild -Dmaven.test.skip=true'
+  }
 }
