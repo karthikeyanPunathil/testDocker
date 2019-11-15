@@ -12,6 +12,6 @@ node{
       withCredentials([string(credentialsId: 'dockerHub', variable: 'dockerHubPwd')]) {
           sh "docker login -u byta3262 -p ${dockerHubPwd}"
 }
-    sh 'sudo docker push byta3262/doctor:latest'
+    sh 'sudo docker push doctor:latest'
   }
 }
