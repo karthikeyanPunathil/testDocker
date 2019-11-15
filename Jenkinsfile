@@ -8,4 +8,10 @@ node{
   stage('Build Docker Image'){
   sh 'sudo mvn package -Pprod verify jib:dockerBuild -Dmaven.test.skip=true'
   }
+  stage('Push Docker Image'){
+      withCredentials([string(credentialsId: 'dockerHub', variable: 'dockerHubPwd')]) {
+          sh "docker login -u byta3262 -p ${dockerHubPwd}"
+}
+    sh 'sudo docker push byta3262/95f16bac7dd9:latest'
+  }
 }
