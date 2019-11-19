@@ -17,7 +17,7 @@ node{
   }
     stage('run on dev-server'){
     def dockerRun='docker-compose -f src/main/docker/app.yml up'
-    sshagent (credentials: ['dev-server']) {
+    sshagent (credentials: ['dockerPwd']) {
         sh "ssh -o StrictHostKeyChecking=no ec2-user@172.31.39.134 ${dockerRun}"
   }
 }
