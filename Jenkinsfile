@@ -15,11 +15,11 @@ node{
     sh 'sudo docker tag doctor byta3262/doctor:v1.0.1'
     sh 'sudo docker push byta3262/doctor'
   }
-    stage('run on dev-server'){
-    def dockerRun='docker-compose -f src/main/docker/app.yml up'
-    sshagent (credentials: ['dockerPwd']) {
-        sh "ssh -o StrictHostKeyChecking=no ec2-user@172.31.39.134 ${dockerRun}"
-  }
-}
+    //stage('run on dev-server'){
+    //def dockerRun='docker-compose -f src/main/docker/app.yml up'
+    //sshagent (credentials: ['dockerPwd']) {
+        //sh "ssh -o StrictHostKeyChecking=no ec2-user@172.31.39.134 ${dockerRun}"
+  //}
+//}
         
 }
