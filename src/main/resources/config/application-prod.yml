@@ -56,7 +56,7 @@ spring:
             hibernate.cache.use_second_level_cache: false
             hibernate.cache.use_query_cache: false
             hibernate.generate_statistics: true
-   data:
+    data:
         elasticsearch:
            cluster-name: ee7afd1dffef416f897246f0dacb2466
            cluster-nodes: https://ee7afd1dffef416f897246f0dacb2466.us-central1.gcp.cloud.es.io:9243
