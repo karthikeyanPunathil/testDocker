@@ -12,7 +12,7 @@ node{
       withCredentials([string(credentialsId: 'docker-pwd', variable: 'dockerHubPwd')]) {
           sh "docker login -u byta3262 -p ${dockerHubPwd}"
 }
-    sh 'sudo docker tag doctor byta3262/doctor:v1.0.1'
+    sh 'sudo docker tag doctor byta3262/doctor:v1.0.2'
     sh 'sudo docker push byta3262/doctor'
   }
     //stage('run on dev-server'){
