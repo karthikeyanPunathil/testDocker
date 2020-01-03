@@ -1,6 +1,6 @@
 node{
   stage('SCM Checkout'){
-  git 'https://github.com/BYTA-TECH/testDocker'
+  git 'https://github.com/Karthikeyanpk/testDocker'
   }
   stage('Compile-Package'){
   sh 'mvn install -Dmaven.test.skip=true'
